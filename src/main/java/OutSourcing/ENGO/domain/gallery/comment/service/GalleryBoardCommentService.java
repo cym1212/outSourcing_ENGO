@@ -5,7 +5,7 @@ import OutSourcing.ENGO.domain.gallery.comment.dto.request.GalleryBoardCommentRe
 import OutSourcing.ENGO.domain.gallery.comment.dto.response.GalleryBoardCommentResponseDTO;
 import OutSourcing.ENGO.domain.gallery.comment.repository.GalleryBoardCommentRepository;
 import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
-import OutSourcing.ENGO.domain.gallery.gallery_board.repository.GalleryBoardRepository;
+import OutSourcing.ENGO.domain.gallery.gallery_board.repository.gallery_board.GalleryBoardRepository;
 import OutSourcing.ENGO.domain.member.domain.Member;
 import OutSourcing.ENGO.domain.member.repository.Member.MemberRepository;
 import OutSourcing.ENGO.domain.member.service.MemberService;

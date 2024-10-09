@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class GalleryBoardController {
     private final GalleryBoardService galleryBoardService;
 
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 작성합니다.")
-    @PostMapping("/create")
-    public ResponseEntity<String> createGalleryBoard(@RequestBody GalleryBoardCreatRequestDTO galleryBoardCreatRequestDTO){
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createGalleryBoard(@ModelAttribute GalleryBoardCreatRequestDTO galleryBoardCreatRequestDTO){
         try {
             galleryBoardService.createGalleryBoard(galleryBoardCreatRequestDTO);
             return new ResponseEntity<>("게시글이 성공적으로 저장되었습니다", HttpStatus.CREATED);
@@ -43,8 +44,8 @@ public class GalleryBoardController {
     }
 
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
-    @PatchMapping("/{galleryBoardId}")
-    public ResponseEntity<String> updateGalleryBoard (@PathVariable("galleryBoardId") Long galleryBoardId, @RequestBody GalleryBoardCreatRequestDTO galleryBoardCreatRequestDTO){
+    @PatchMapping(value = "/{galleryBoardId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateGalleryBoard (@PathVariable("galleryBoardId") Long galleryBoardId, @ModelAttribute GalleryBoardCreatRequestDTO galleryBoardCreatRequestDTO){
         try{
             galleryBoardService.updateGalleryBoard(galleryBoardId, galleryBoardCreatRequestDTO);
             return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다");

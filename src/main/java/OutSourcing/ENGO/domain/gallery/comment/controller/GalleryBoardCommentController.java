@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/gallery-board/{galleryBoardId}/gallery_board_comments")
+@RequestMapping("/gallery-board/{galleryBoardId}/gallery-board-comments")
 public class GalleryBoardCommentController {
 
     @Autowired

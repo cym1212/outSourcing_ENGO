@@ -1,4 +1,4 @@
-package OutSourcing.ENGO.domain.gallery.gallery_board.repository;
+package OutSourcing.ENGO.domain.gallery.gallery_board.repository.gallery_board;
 
 
 import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
@@ -68,7 +68,6 @@ public class GalleryBoardRepositoryCustomImpl implements GalleryBoardRepositoryC
     @Transactional
     @Override
     public void updateGalleryBoard(Long galleryBoardId, GalleryBoardCreatRequestDTO galleryBoardCreatRequestDTO) {
-        // 엔티티 조회
         GalleryBoard existingGalleryBoard = entityManager.find(GalleryBoard.class, galleryBoardId);
         if (existingGalleryBoard == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_POST);
@@ -78,7 +77,7 @@ public class GalleryBoardRepositoryCustomImpl implements GalleryBoardRepositoryC
         long updatedCount = queryFactory.update(galleryBoard)
                 .set(galleryBoard.title, galleryBoardCreatRequestDTO.getTitle() != null ? galleryBoardCreatRequestDTO.getTitle() : existingGalleryBoard.getTitle())
                 .set(galleryBoard.content, galleryBoardCreatRequestDTO.getContent() != null ? galleryBoardCreatRequestDTO.getContent() : existingGalleryBoard.getContent())
-                .set(galleryBoard.updatedAt, LocalDateTime.now())  // 업데이트 시각 갱신
+                .set(galleryBoard.updatedAt, LocalDateTime.now())
                 .where(galleryBoard.id.eq(galleryBoardId))
                 .execute();
 

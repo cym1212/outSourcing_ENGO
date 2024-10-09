@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("auth")
 public class AuthController {
     private final AuthService authService;
     private final JwtProvider jwtProvider;
@@ -168,9 +168,4 @@ public class AuthController {
     }
 
 
-
-    @PostMapping("/test")
-    public String test() {
-        return "sucess";
-    }
 }

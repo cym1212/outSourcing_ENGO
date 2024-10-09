@@ -42,6 +42,7 @@ public class ThirdBoardService {
                 .id(thirdBoard.getId())
                 .title(thirdBoard.getTitle())
                 .name(thirdBoard.getMember().getName())
+                .createdAt(thirdBoard.getCreatedAt())
                 .viewCount(thirdBoard.getViewCount())
                 .likeCount(thirdBoard.getLikeCount())
                 .build());
@@ -58,6 +59,7 @@ public class ThirdBoardService {
                 .id(thirdBoard.getId())
                 .title(thirdBoard.getTitle())
                 .name(thirdBoard.getMember().getName())
+                .createdAt(thirdBoard.getCreatedAt())
                 .content(thirdBoard.getContent())
                 .likeCount(thirdBoard.getLikeCount())
                 .viewCount(thirdBoard.getViewCount())

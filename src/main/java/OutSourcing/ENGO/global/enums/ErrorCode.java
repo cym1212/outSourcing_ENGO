@@ -72,6 +72,9 @@ public enum ErrorCode {
     NOT_FOUND_POST(400,"P001","게시물을 찾을 수 없습니다."),
     TOO_FREQUENT_POST(400, "P004", "게시글을 작성한 지 얼마 지나지 않았으므로 잠시 후 작성해주세요"),
 
+    //Image
+    IMAGE_NOT_FOUND(400,"I001","이미지를 찾을 수 없습니다"),
+
     //Comment
     NOT_FOUND_COMMENT(400,"CM001","댓글을 찾을 수 없습니다."),
 

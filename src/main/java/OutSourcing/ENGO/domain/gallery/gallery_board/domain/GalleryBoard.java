@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Entity
 @Builder(toBuilder = true)
@@ -30,6 +32,10 @@ public class GalleryBoard extends BaseEntity {
 
     @Column(nullable = false)
     private int viewCount;
+
+    @OneToMany(mappedBy = "galleryBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<GalleryImage> images;  // 여러 이미지와의 관계 설정
+
 
     public void incrementViewCount() {
         this.viewCount++;

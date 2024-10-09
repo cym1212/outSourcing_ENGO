@@ -6,6 +6,7 @@ import OutSourcing.ENGO.global.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +24,8 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
 
-    private static final String COACH = "COACH";
 
-    private static final String STUDENT = "STUDENT";
+    private static final String USER = "USER";
     private static final String ADMIN = "ADMIN";
 
 
@@ -37,12 +37,48 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/login", "auth/signup").permitAll();
-                    auth.requestMatchers("/**").permitAll();
+                    auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET,"/auth/user/details").hasAnyAuthority(ADMIN);
 
-                    //todo
-                    //권한별로 엔드포인트 설정하기
+
+                    auth.requestMatchers(HttpMethod.GET,
+                            "/first-board","first-board/*","first-board/*/first-board-comments",
+                            "/second-board","second-board/*","second-board/*/second-board-comments",
+                            "/third-board","third-board/*","third-board/*/third-board-comments",
+                            "/gallery-board","gallery-board/*","gallery-board/*/gallery-board-comments").permitAll();
+
+                    auth.requestMatchers(HttpMethod.GET,  "/first-board-like/*/likes-count",
+                            "/second-board-like/*/likes-count",
+                            "/third-board-like/*/likes-count",
+                            "/gallery-board-like/*/likes-count").hasAnyAuthority(USER, ADMIN);
+                    auth.requestMatchers(HttpMethod.POST,
+                            "/first-board-like/*/unlike", "/first-board-like/*/like", "/first-board/create",
+                            "/first-board/*/first-board-comments/create",
+                            "/second-board-like/*/unlike", "/second-board-like/*/like", "/second-board/create",
+                            "/second-board/*/second-board-comments/create",
+                            "/third-board-like/*/unlike", "/third-board-like/*/like", "/third-board/create",
+                            "/third-board/*/first-board-comments/create",
+                            "/gallery-board-like/*/unlike", "/gallery-board-like/*/like", "/gallery-board/create",
+                            "/gallery-board/*/gallery-board-comments/create").hasAnyAuthority(USER, ADMIN);
+
+                    auth.requestMatchers(HttpMethod.PATCH,
+                            "/first-board/*", "/first-board/*/first-board-comments/update/*",
+                            "/second-board/*", "/second-board/*/second-board-comments/update/*",
+                            "/third-board/*", "/third-board/*/third-board-comments/update/*",
+                            "/gallery-board/*", "/gallery-board/*/gallery-board-comments/update/*").hasAnyAuthority(USER, ADMIN);
+
+                    auth.requestMatchers(HttpMethod.DELETE,
+                            "/first-board/*", "/first-board/*/first-board-comments/delete/*",
+                            "/second-board/*", "/second-board/*/second-board-comments/delete/*",
+                            "/third-board/*", "/third-board/*/first-board-comments/delete/*",
+                            "/gallery-board/*", "/gallery-board/*/first-board-comments/delete/*").hasAnyAuthority(USER, ADMIN);
+
+                    auth.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    auth.requestMatchers(HttpMethod.PATCH, "/auth/logout").permitAll();
+                    auth.requestMatchers(HttpMethod.DELETE, "/auth/delete/*").permitAll();
+
                     auth.anyRequest().authenticated();
+
                 })
                 .addFilterBefore(new JwtAuthFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .logout(Customizer.withDefaults());

@@ -1,4 +1,4 @@
-package OutSourcing.ENGO.domain.gallery.gallery_board.repository;
+package OutSourcing.ENGO.domain.gallery.gallery_board.repository.gallery_board;
 
 import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
 import OutSourcing.ENGO.domain.gallery.gallery_board.dto.request.GalleryBoardCreatRequestDTO;

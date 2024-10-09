@@ -44,6 +44,7 @@ public class FirstBoardService {
                 .id(firstBoard.getId())
                 .title(firstBoard.getTitle())
                 .name(firstBoard.getMember().getName())
+                .createdAt(firstBoard.getCreatedAt())
                 .viewCount(firstBoard.getViewCount())
                 .likeCount(firstBoard.getLikeCount())
                 .build());
@@ -60,6 +61,7 @@ public class FirstBoardService {
                 .id(firstBoard.getId())
                 .title(firstBoard.getTitle())
                 .name(firstBoard.getMember().getName())
+                .createdAt(firstBoard.getCreatedAt())
                 .content(firstBoard.getContent())
                 .likeCount(firstBoard.getLikeCount())
                 .viewCount(firstBoard.getViewCount())

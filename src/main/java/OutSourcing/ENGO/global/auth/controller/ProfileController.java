@@ -3,25 +3,18 @@ package OutSourcing.ENGO.global.auth.controller;
 
 import OutSourcing.ENGO.global.auth.dto.*;
 import OutSourcing.ENGO.global.auth.service.ProfileService;
-import OutSourcing.ENGO.global.dto.MessageDTO;
 import OutSourcing.ENGO.global.dto.ResponseWrapper;
-import OutSourcing.ENGO.global.error.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("auth")
 public class ProfileController {
 
     private final ProfileService profileService;

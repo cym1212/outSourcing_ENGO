@@ -1,7 +1,7 @@
 package OutSourcing.ENGO.domain.gallery.like.service;
 
 import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
-import OutSourcing.ENGO.domain.gallery.gallery_board.repository.GalleryBoardRepository;
+import OutSourcing.ENGO.domain.gallery.gallery_board.repository.gallery_board.GalleryBoardRepository;
 import OutSourcing.ENGO.domain.gallery.like.domain.GalleryBoardLike;
 import OutSourcing.ENGO.domain.gallery.like.dto.GalleryBoardLikeCountDTO;
 import OutSourcing.ENGO.domain.gallery.like.repository.GalleryBoardGalleryBoardLikeRepository;

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor
@@ -15,4 +18,5 @@ public class GalleryBoardListResponseDTO {
     private String name;
     private int likeCount;
     private int viewCount;
+    private LocalDateTime createdAt;
 }

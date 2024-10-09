@@ -42,6 +42,7 @@ public class SecondBoardService {
                 .id(secondBoard.getId())
                 .title(secondBoard.getTitle())
                 .name(secondBoard.getMember().getName())
+                .createdAt(secondBoard.getCreatedAt())
                 .viewCount(secondBoard.getViewCount())
                 .likeCount(secondBoard.getLikeCount())
                 .build());
@@ -58,6 +59,7 @@ public class SecondBoardService {
                 .id(secondBoard.getId())
                 .title(secondBoard.getTitle())
                 .name(secondBoard.getMember().getName())
+                .createdAt(secondBoard.getCreatedAt())
                 .content(secondBoard.getContent())
                 .likeCount(secondBoard.getLikeCount())
                 .viewCount(secondBoard.getViewCount())
