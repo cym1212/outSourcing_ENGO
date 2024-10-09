@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/first-board/{firstBoardId}/first_board_comments")
+@RequestMapping("/first-board/{firstBoardId}/first-board-comments")
 public class FirstBoardCommentController {
 
     @Autowired
@@ -48,5 +48,5 @@ public class FirstBoardCommentController {
         return ResponseEntity.noContent().build();
     }
 
-    //todo 1. 게시글이랑 댓글 로직 테스트 하기 (O) / 2. 좋아요 로직 구현하기 (O) / 3. 게시판 4개로 복사하기 / 4. 게시판 하나 이미지 업로드 할 수 있게 바꾸기 / 5. 전체적인 테스트 및 디테일 구현 (비밀번호 재설정 로직 같은거) /6. 관리자 계정 생성해서 테스트
+    //todo 1. 게시글이랑 댓글 로직 테스트 하기 (O) / 2. 좋아요 로직 구현하기 (O) / 3. 게시판 4개로 복사하기(O) / 4. 게시판 하나 이미지 업로드 할 수 있게 바꾸기 / 5. 전체적인 테스트 및 디테일 구현 (비밀번호 재설정 로직 같은거) /6. 관리자 계정 생성해서 테스트
 }

@@ -56,10 +56,10 @@ public class FirstBoardRepositoryCustomImpl implements FirstBoardRepositoryCusto
 
     @Transactional
     @Override
-    public void deleteFirstBoard(Long communityId) {
+    public void deleteFirstBoard(Long firstBoardId) {
         long updatedCount = queryFactory.update(firstBoard)
                 .set(firstBoard.deletedAt, LocalDateTime.now())
-                .where(firstBoard.id.eq(communityId).and(firstBoard.deletedAt.isNull()))
+                .where(firstBoard.id.eq(firstBoardId).and(firstBoard.deletedAt.isNull()))
                 .execute();
 
         if (updatedCount == 0) {

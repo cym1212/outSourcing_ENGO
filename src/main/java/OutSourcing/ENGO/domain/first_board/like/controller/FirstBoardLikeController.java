@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/first-board")
+@RequestMapping("/first-board-like")
 public class FirstBoardLikeController {
 
     private final FirstBoardLikeService firstBoardLikeService;

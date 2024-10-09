@@ -42,9 +42,9 @@ public class FirstBoardLikeService {
     }
 
     @Transactional
-    public void unlikePost(Long firstBoardIdr) {
+    public void unlikePost(Long firstBoardId) {
         Member member = memberService.getCurrentMember();
-        FirstBoard board = firstBoardRepository.findById(firstBoardIdr)
+        FirstBoard board = firstBoardRepository.findById(firstBoardId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
         Like like = likeRepository.findByFirstBoardAndMember(board, member)
