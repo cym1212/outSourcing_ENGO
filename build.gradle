@@ -81,3 +81,6 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+tasks.withType(JavaCompile) {
+	options.forkOptions.javaHome = file('/Library/Java/JavaVirtualMachines/jdk-17.0.5.jdk/Contents/Home') // Java 17 경로 직접 지정
+}
