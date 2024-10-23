@@ -38,20 +38,18 @@ public class FirstBoardRepositoryCustomImpl implements FirstBoardRepositoryCusto
         QFirstBoard firstBoard = QFirstBoard.firstBoard;
 
         JPAQuery<FirstBoard> query = queryFactory.selectFrom(firstBoard)
-                .where(firstBoard.deletedAt.isNull());
+                .where(firstBoard.deletedAt.isNull())
+                .orderBy(firstBoard.createdAt.desc());  // 최신순 정렬
 
-        // 페이징 및 정렬 처리
-        query.offset(pageable.getOffset());
-        query.limit(pageable.getPageSize());
+        List<FirstBoard> firstBoardList = query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        // QueryDSL에서 FetchResults를 사용하여 페이징된 결과와 총 카운트 계산
-        List<FirstBoard> FirstBoardList = query.fetch(); // fetch()를 통해 결과만 가져옴
         long totalCount = queryFactory.selectFrom(firstBoard)
-                .where(firstBoard.deletedAt.isNull()
-                ).fetchCount(); // fetchCount()로 총 개수 계산
+                .where(firstBoard.deletedAt.isNull())
+                .fetchCount();
 
-        // Page 객체로 변환하여 반환
-        return new PageImpl<>(FirstBoardList, pageable, totalCount);
+        return new PageImpl<>(firstBoardList, pageable, totalCount);
     }
 
     @Transactional

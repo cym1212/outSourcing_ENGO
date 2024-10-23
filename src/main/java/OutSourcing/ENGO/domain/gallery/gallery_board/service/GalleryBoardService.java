@@ -16,15 +16,19 @@ import OutSourcing.ENGO.infra.s3upload.service.S3UploadService;
 import OutSourcing.ENGO.infra.s3upload.utils.UploadUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+
 public class GalleryBoardService {
     private final GalleryBoardRepository galleryBoardRepository;
     private final MemberService memberService;
@@ -43,17 +47,21 @@ public class GalleryBoardService {
                 .build();
 
         galleryBoardRepository.save(galleryBoard);
-
-        for (MultipartFile image : galleryBoardCreatRequestDTO.getImages()) {
-            String fileName = image.getOriginalFilename();
-            String imageUrl = s3UploadService.uploadFile(image, UploadUtils.GALLERY_IMAGE, currentMember.getId());
-            GalleryImage galleryImage = GalleryImage.builder()
-                    .galleryBoard(galleryBoard)
-                    .imageUrl(imageUrl)
-                    .fileName(fileName)
-                    .build();
-            galleryImageRepository.save(galleryImage);
+        if (galleryBoardCreatRequestDTO.getImages() == null || galleryBoardCreatRequestDTO.getImages().isEmpty()) {
+            log.info("이미지가 없으므로 그대로 진행합니다");
+        } else {
+            for (MultipartFile image : galleryBoardCreatRequestDTO.getImages()) {
+                String fileName = image.getOriginalFilename();
+                String imageUrl = s3UploadService.uploadFile(image, UploadUtils.GALLERY_IMAGE, currentMember.getId());
+                GalleryImage galleryImage = GalleryImage.builder()
+                        .galleryBoard(galleryBoard)
+                        .imageUrl(imageUrl)
+                        .fileName(fileName)
+                        .build();
+                galleryImageRepository.save(galleryImage);
+            }
         }
+
     }
 
     @Transactional
@@ -73,7 +81,7 @@ public class GalleryBoardService {
     @Transactional
     public GalleryBoardDetailResponseDTO getGalleryBoardDetail(Long galleryBoardId) {
         GalleryBoard galleryBoard = galleryBoardRepository.findById(galleryBoardId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
-
+        Member currentMember = memberService.getCurrentMember();
         // 유저 한명당 한번씩만 올라가야되면 수정해야함.
         galleryBoard.incrementViewCount();
         galleryBoardRepository.save(galleryBoard);
@@ -84,6 +92,7 @@ public class GalleryBoardService {
 
         return GalleryBoardDetailResponseDTO.builder()
                 .id(galleryBoard.getId())
+                .authorId(galleryBoard.getMember().getId())
                 .title(galleryBoard.getTitle())
                 .name(galleryBoard.getMember().getName())
                 .content(galleryBoard.getContent())
@@ -91,6 +100,8 @@ public class GalleryBoardService {
                 .viewCount(galleryBoard.getViewCount())
                 .imageUrls(imageUrls)
                 .createdAt(galleryBoard.getCreatedAt())
+                .requestUserId(currentMember.getId())
+                .requestUserRole(currentMember.getRole())
                 .build();
     }
 
@@ -105,27 +116,33 @@ public class GalleryBoardService {
             throw new BusinessException(ErrorCode.ACCESS_DENIED);
         }
 
-        List<GalleryImage> existingImages = galleryImageRepository.findByGalleryBoardAndDeletedAtIsNull(galleryBoard);
-        for (GalleryImage image : existingImages) {
-            String deletedImageKey = s3UploadService.copyFile(image.getImageUrl(), UploadUtils.GALLERY_IMAGE, UploadUtils.GALLERY_IMAGE_DELETED);
-            s3UploadService.deleteFile(image.getImageUrl());  // 원본 삭제
+        if (galleryBoardCreatRequestDTO.getImages() == null || galleryBoardCreatRequestDTO.getImages().isEmpty()) {
+            log.info("이미지가 없으므로 그대로 진행합니다");
+        } else {
+            List<GalleryImage> existingImages = galleryImageRepository.findByGalleryBoardAndDeletedAtIsNull(galleryBoard);
+            for (GalleryImage image : existingImages) {
+                String deletedImageKey = s3UploadService.copyFile(image.getImageUrl(), UploadUtils.GALLERY_IMAGE, UploadUtils.GALLERY_IMAGE_DELETED);
+                s3UploadService.deleteFile(image.getImageUrl());  // 원본 삭제
+            }
+
+            galleryImageRepository.deleteGalleryImages(galleryBoardId);
+
+            // 새로운 이미지 업로드
+            for (MultipartFile image : galleryBoardCreatRequestDTO.getImages()) {
+                String fileName = image.getOriginalFilename();
+                String imageUrl = s3UploadService.uploadFile(image, UploadUtils.GALLERY_IMAGE, currentMember.getId());
+
+                GalleryImage galleryImage = GalleryImage.builder()
+                        .galleryBoard(galleryBoard)
+                        .imageUrl(imageUrl)
+                        .fileName(fileName)
+                        .build();
+
+                galleryImageRepository.save(galleryImage);
+            }
+
         }
 
-        galleryImageRepository.deleteGalleryImages(galleryBoardId);
-
-        // 새로운 이미지 업로드
-        for (MultipartFile image : galleryBoardCreatRequestDTO.getImages()) {
-            String fileName = image.getOriginalFilename();
-            String imageUrl = s3UploadService.uploadFile(image, UploadUtils.GALLERY_IMAGE, currentMember.getId());
-
-            GalleryImage galleryImage = GalleryImage.builder()
-                    .galleryBoard(galleryBoard)
-                    .imageUrl(imageUrl)
-                    .fileName(fileName)
-                    .build();
-
-            galleryImageRepository.save(galleryImage);
-        }
 
         galleryBoardRepository.updateGalleryBoard(galleryBoardId, galleryBoardCreatRequestDTO);
     }
@@ -150,6 +167,36 @@ public class GalleryBoardService {
         }
 
         galleryBoardRepository.deleteGalleryBoard(galleryBoard.getId());
+    }
+
+    @Transactional
+    public Page<GalleryBoardListResponseDTO> searchBoards(String query, String searchBy, Pageable pageable) {
+        Page<GalleryBoard> boards;
+
+        if (searchBy.equals("title")) {
+            boards = galleryBoardRepository.findByTitleContainingAndDeletedAtIsNull(query, pageable);
+        } else if (searchBy.equals("content")) {
+            boards = galleryBoardRepository.findByContentContainingAndDeletedAtIsNull(query, pageable);
+        } else if (searchBy.equals("name")) {
+            boards = galleryBoardRepository.findByMemberNameContainingAndDeletedAtIsNull(query, pageable);
+        } else {
+            boards = galleryBoardRepository.findByTitleContainingOrContentContainingOrMemberNameContainingAndDeletedAtIsNull(query, query, query, pageable);
+        }
+
+        // Page 객체로 엔티티를 DTO로 변환
+        return boards.map(this::convertToDto);
+    }
+
+    // 수동 매핑 메서드
+    private GalleryBoardListResponseDTO convertToDto(GalleryBoard board) {
+        return GalleryBoardListResponseDTO.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .name(board.getMember().getName()) // Member 객체에서 이름 추출
+                .likeCount(board.getLikeCount())
+                .viewCount(board.getViewCount())
+                .createdAt(board.getCreatedAt())
+                .build();
     }
 
 }

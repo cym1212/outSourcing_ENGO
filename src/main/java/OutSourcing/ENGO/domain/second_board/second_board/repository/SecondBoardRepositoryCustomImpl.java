@@ -2,6 +2,7 @@ package OutSourcing.ENGO.domain.second_board.second_board.repository;
 
 
 import OutSourcing.ENGO.domain.first_board.first_board.domain.QFirstBoard;
+import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
 import OutSourcing.ENGO.domain.second_board.second_board.domain.SecondBoard;
 import OutSourcing.ENGO.domain.second_board.second_board.dto.request.SecondBoardCreatRequestDTO;
 import OutSourcing.ENGO.global.enums.ErrorCode;
@@ -36,20 +37,19 @@ public class SecondBoardRepositoryCustomImpl implements SecondBoardRepositoryCus
     @Override
     public Page<SecondBoard> findNonDeletedSecondBoard(Pageable pageable) {
 
+
         JPAQuery<SecondBoard> query = queryFactory.selectFrom(secondBoard)
-                .where(secondBoard.deletedAt.isNull());
+                .where(secondBoard.deletedAt.isNull())
+                .orderBy(secondBoard.createdAt.desc());  // 최신순 정렬
 
-        // 페이징 및 정렬 처리
-        query.offset(pageable.getOffset());
-        query.limit(pageable.getPageSize());
+        List<SecondBoard> secondBoardList = query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        // QueryDSL에서 FetchResults를 사용하여 페이징된 결과와 총 카운트 계산
-        List<SecondBoard> secondBoardList = query.fetch(); // fetch()를 통해 결과만 가져옴
         long totalCount = queryFactory.selectFrom(secondBoard)
-                .where(secondBoard.deletedAt.isNull()
-                ).fetchCount(); // fetchCount()로 총 개수 계산
+                .where(secondBoard.deletedAt.isNull())
+                .fetchCount();
 
-        // Page 객체로 변환하여 반환
         return new PageImpl<>(secondBoardList, pageable, totalCount);
     }
 

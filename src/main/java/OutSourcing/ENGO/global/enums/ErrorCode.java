@@ -27,6 +27,8 @@ public enum ErrorCode {
     MULTIPART_FILE_NOT_FOUND(400,"C019","MultipartFile을 찾을 수 없습니다."),
     REQUEST_FAILED(400,"C020","요청에 실패했습니다 다시 시도해주세요"),
     UPDATE_FAILED(400,"C021","업데이트에 실패했습니다."),
+    PASSWORD_NOT_SAME(400,"C022","입력하신 두 비밀번호가 일치하지 않습니다"),
+    INVALID_PASSWORD_FORMAT(400, "C021" ,"비밀번호 형식이 맞지 않습니다."),
 
 
 

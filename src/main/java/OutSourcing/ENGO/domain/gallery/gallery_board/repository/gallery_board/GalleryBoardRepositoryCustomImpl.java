@@ -1,7 +1,10 @@
 package OutSourcing.ENGO.domain.gallery.gallery_board.repository.gallery_board;
 
 
+import OutSourcing.ENGO.domain.first_board.first_board.domain.FirstBoard;
+import OutSourcing.ENGO.domain.first_board.first_board.domain.QFirstBoard;
 import OutSourcing.ENGO.domain.gallery.gallery_board.domain.GalleryBoard;
+import OutSourcing.ENGO.domain.gallery.gallery_board.domain.QGalleryBoard;
 import OutSourcing.ENGO.domain.gallery.gallery_board.dto.request.GalleryBoardCreatRequestDTO;
 import OutSourcing.ENGO.global.enums.ErrorCode;
 import OutSourcing.ENGO.global.error.exception.BusinessException;
@@ -35,20 +38,19 @@ public class GalleryBoardRepositoryCustomImpl implements GalleryBoardRepositoryC
     @Override
     public Page<GalleryBoard> findNonDeletedGalleryBoard(Pageable pageable) {
 
+
         JPAQuery<GalleryBoard> query = queryFactory.selectFrom(galleryBoard)
-                .where(galleryBoard.deletedAt.isNull());
+                .where(galleryBoard.deletedAt.isNull())
+                .orderBy(galleryBoard.createdAt.desc());  // 최신순 정렬
 
-        // 페이징 및 정렬 처리
-        query.offset(pageable.getOffset());
-        query.limit(pageable.getPageSize());
+        List<GalleryBoard> galleryBoardList = query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        // QueryDSL에서 FetchResults를 사용하여 페이징된 결과와 총 카운트 계산
-        List<GalleryBoard> galleryBoardList = query.fetch(); // fetch()를 통해 결과만 가져옴
         long totalCount = queryFactory.selectFrom(galleryBoard)
-                .where(galleryBoard.deletedAt.isNull()
-                ).fetchCount(); // fetchCount()로 총 개수 계산
+                .where(galleryBoard.deletedAt.isNull())
+                .fetchCount();
 
-        // Page 객체로 변환하여 반환
         return new PageImpl<>(galleryBoardList, pageable, totalCount);
     }
 

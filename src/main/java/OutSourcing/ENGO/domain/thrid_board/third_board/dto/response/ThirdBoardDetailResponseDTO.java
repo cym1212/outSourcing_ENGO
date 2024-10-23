@@ -1,5 +1,6 @@
 package OutSourcing.ENGO.domain.thrid_board.third_board.dto.response;
 
+import OutSourcing.ENGO.global.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ThirdBoardDetailResponseDTO {
     private Long id;
-
+    private Long authorId;
 
     private String title;
 
@@ -22,6 +23,8 @@ public class ThirdBoardDetailResponseDTO {
     private String content;
     private int likeCount;
     private int viewCount;
+    private Long requestUserId;
+    private Role requestUserRole;
 
     //TODO 댓글 추가하세요
 }

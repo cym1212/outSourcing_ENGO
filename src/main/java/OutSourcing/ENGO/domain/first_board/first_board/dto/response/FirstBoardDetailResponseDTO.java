@@ -1,5 +1,6 @@
 package OutSourcing.ENGO.domain.first_board.first_board.dto.response;
 
+import OutSourcing.ENGO.global.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FirstBoardDetailResponseDTO {
     private Long id;
-
-
+    private Long authorId;
     private String title;
 
     private String name;
@@ -23,5 +23,7 @@ public class FirstBoardDetailResponseDTO {
     private int likeCount;
     private int viewCount;
 
-    //TODO 댓글 추가하세요
+    private Long requestUserId;
+    private Role requestUserRole;
+
 }

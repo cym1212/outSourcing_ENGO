@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FirstBoardCommentResponseDTO {
     private Long id;
+    private Long authorId;
     private String comments;
     private String memberName;
     private String boardTitle;

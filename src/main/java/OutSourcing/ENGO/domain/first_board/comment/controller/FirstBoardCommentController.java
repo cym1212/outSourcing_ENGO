@@ -5,6 +5,7 @@ import OutSourcing.ENGO.domain.first_board.comment.dto.request.FirstBoardComment
 import OutSourcing.ENGO.domain.first_board.comment.dto.response.FirstBoardCommentResponseDTO;
 import OutSourcing.ENGO.domain.first_board.comment.service.FirstBoardCommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/first-board/{firstBoardId}/first-board-comments")
+@RequiredArgsConstructor
 public class FirstBoardCommentController {
 
-    @Autowired
-    private FirstBoardCommentService firstBoardCommentService;
+    private final FirstBoardCommentService firstBoardCommentService;
 
     @GetMapping
     @Operation(summary = "게시판 댓글 조회", description = "해당 게시판에 속해있는 댓글들을 페이징하여 조회합니다.")

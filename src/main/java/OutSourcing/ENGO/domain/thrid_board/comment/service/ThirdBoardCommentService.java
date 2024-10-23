@@ -38,6 +38,7 @@ public class ThirdBoardCommentService {
                     boolean isDeleted = comment.getDeletedAt() != null;
                     return ThirdBoardCommentResponseDTO.builder()
                             .id(comment.getId())
+                            .authorId(comment.getMember().getId())
                             .comments(isDeleted ? "삭제된 댓글입니다." : comment.getComments())
                             .memberName(comment.getMember().getName())
                             .boardTitle(comment.getThirdBoard().getTitle())
@@ -64,6 +65,7 @@ public class ThirdBoardCommentService {
 
         return ThirdBoardCommentResponseDTO.builder()
                 .id(savedComment.getId())
+                .authorId(savedComment.getMember().getId())
                 .comments(savedComment.getComments())
                 .memberName(member.getName())
                 .boardTitle(savedComment.getThirdBoard().getTitle())
@@ -94,6 +96,7 @@ public class ThirdBoardCommentService {
         //todo comments 왜 변한걸로 안나오는지 확인필요
         return ThirdBoardCommentResponseDTO.builder()
                 .id(updatedComment.getId())
+                .authorId(updatedComment.getMember().getId())
                 .comments(updatedComment.getComments())
                 .memberName(member.getName())
                 .boardTitle(updatedComment.getThirdBoard().getTitle())

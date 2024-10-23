@@ -4,6 +4,8 @@ package OutSourcing.ENGO.global.auth.controller;
 import OutSourcing.ENGO.global.auth.dto.*;
 import OutSourcing.ENGO.global.auth.service.AuthService;
 import OutSourcing.ENGO.global.dto.MessageDTO;
+import OutSourcing.ENGO.global.enums.ErrorCode;
+import OutSourcing.ENGO.global.error.exception.BusinessException;
 import OutSourcing.ENGO.global.error.exception.ErrorResponse;
 import OutSourcing.ENGO.global.jwt.service.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
@@ -32,7 +35,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "200", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "이미 존재하는 회원입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
-    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO signUpRequestDTO) {
+    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody  SignUpRequestDTO signUpRequestDTO ) {
 
         SignUpResponseDTO responseDTO = authService.signUp(signUpRequestDTO);
         return ResponseEntity.ok(responseDTO);
@@ -120,7 +123,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "200", description = "성공"),
                     @ApiResponse(responseCode = "400", description = "존재하지 않는 회원입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
-    public ResponseEntity<MessageDTO> resetPassword(@Valid @RequestBody FindRequestDTO.ResetPassword resetPasswordDTO) {
+    public ResponseEntity<MessageDTO> resetPassword( @RequestBody FindRequestDTO.ResetPassword resetPasswordDTO) {
         authService.resetPassword(resetPasswordDTO);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MessageDTO.builder()
